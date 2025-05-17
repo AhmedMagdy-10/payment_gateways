@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payment_gateway/core/utils/styles.dart';
+import 'package:payment_gateway/features/checkout/presentation/views/card_details.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/widgets/custom_button.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/widgets/order_info_item.dart';
 
@@ -29,7 +30,13 @@ class MyCardBody extends StatelessWidget {
 
           OrderInfoWidget(title: 'Total', price: r'$80', style: Styles.style24),
           SizedBox(height: 16),
-          CustomButton(),
+          CustomButton(
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PaymentDetails()),
+                ),
+          ),
         ],
       ),
     );
