@@ -31,6 +31,7 @@ class MyCardBody extends StatelessWidget {
           OrderInfoWidget(title: 'Total', price: r'$80', style: Styles.style24),
           SizedBox(height: 16),
           CustomButton(
+            title: 'Complete Payment',
             onTap:
                 () => Navigator.push(
                   context,
