@@ -7,17 +7,19 @@ class OrderInfoWidget extends StatelessWidget {
     required this.title,
     required this.price,
     this.style,
+    this.stylePrice,
   });
 
   final String title, price;
   final TextStyle? style;
+  final TextStyle? stylePrice;
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Text(title, style: style ?? Styles.style18),
         Spacer(),
-        Text(price, style: style ?? Styles.style18),
+        Text(price, style: stylePrice ?? Styles.style18),
       ],
     );
   }
