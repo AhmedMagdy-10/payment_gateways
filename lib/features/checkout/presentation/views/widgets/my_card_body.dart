@@ -3,6 +3,7 @@ import 'package:payment_gateway/core/utils/styles.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/card_details.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/widgets/custom_button.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/widgets/order_info_item.dart';
+import 'package:payment_gateway/features/checkout/presentation/views/widgets/payment_method_item_list.dart';
 
 class MyCardBody extends StatelessWidget {
   const MyCardBody({super.key});
@@ -32,12 +33,43 @@ class MyCardBody extends StatelessWidget {
           SizedBox(height: 16),
           CustomButton(
             title: 'Complete Payment',
-            onTap:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PaymentDetails()),
-                ),
+            onTap: () {
+              //      Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => PaymentDetails()
+              //   ),
+              // );
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return PaymentMethodbottomSheet();
+                },
+              );
+            },
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class PaymentMethodbottomSheet extends StatelessWidget {
+  const PaymentMethodbottomSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Select pay Method', style: Styles.style20),
+          Divider(height: 15, thickness: 2, color: Color(0xffC7C7C7)),
+
+          SizedBox(height: 20),
+          PaymentWayesList(),
+          SizedBox(height: 30),
+          CustomButton(title: 'Continue'),
         ],
       ),
     );
