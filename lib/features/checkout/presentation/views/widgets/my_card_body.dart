@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:payment_gateway/core/utils/styles.dart';
+import 'package:payment_gateway/features/checkout/data/repo/payment_repo_impl.dart';
+import 'package:payment_gateway/features/checkout/presentation/cubit/payment_cubit.dart';
+import 'package:payment_gateway/features/checkout/presentation/cubit/payment_state.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/card_details.dart';
+import 'package:payment_gateway/features/checkout/presentation/views/success_payment_process.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/widgets/custom_button.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/widgets/order_info_item.dart';
 import 'package:payment_gateway/features/checkout/presentation/views/widgets/payment_method_item_list.dart';
@@ -42,7 +48,10 @@ class MyCardBody extends StatelessWidget {
               showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return PaymentMethodbottomSheet();
+                  return BlocProvider<PaymentCubit>(
+                    create: (context) => PaymentCubit(PaymentRepoImpl()),
+                    child: PaymentMethodbottomSheet(),
+                  );
                 },
               );
             },
@@ -58,20 +67,35 @@ class PaymentMethodbottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Select pay Method', style: Styles.style20),
-          Divider(height: 15, thickness: 2, color: Color(0xffC7C7C7)),
+    return BlocConsumer<PaymentCubit, PaymentState>(
+      listener: (context, state) {
+        if (state is PaymentSuccessState) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SuccessPaymentProcess()),
+          );
+        }
+        if (state is PaymentErrorState) {
+          SnackBar snackBar = SnackBar(content: Text(state.errMassage));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      },
+      builder:
+          (context, state) => Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Select pay Method', style: Styles.style20),
+                Divider(height: 15, thickness: 2, color: Color(0xffC7C7C7)),
 
-          SizedBox(height: 20),
-          PaymentWayesList(),
-          SizedBox(height: 30),
-          CustomButton(title: 'Continue'),
-        ],
-      ),
+                SizedBox(height: 20),
+                PaymentWayesList(),
+                SizedBox(height: 30),
+                CustomButton(title: 'Continue'),
+              ],
+            ),
+          ),
     );
   }
 }
