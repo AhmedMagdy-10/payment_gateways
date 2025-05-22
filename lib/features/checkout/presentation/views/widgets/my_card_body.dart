@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:payment_gateway/core/utils/styles.dart';
+import 'package:payment_gateway/features/checkout/data/models/payment_intent_input_model.dart';
+import 'package:payment_gateway/features/checkout/data/models/payment_intent_model/payment_intent_model.dart';
 import 'package:payment_gateway/features/checkout/data/repo/payment_repo_impl.dart';
 import 'package:payment_gateway/features/checkout/presentation/cubit/payment_cubit.dart';
 import 'package:payment_gateway/features/checkout/presentation/cubit/payment_state.dart';
@@ -76,8 +80,10 @@ class PaymentMethodbottomSheet extends StatelessWidget {
           );
         }
         if (state is PaymentErrorState) {
+          Navigator.pop(context);
           SnackBar snackBar = SnackBar(content: Text(state.errMassage));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          log(state.errMassage);
         }
       },
       builder:
@@ -92,7 +98,22 @@ class PaymentMethodbottomSheet extends StatelessWidget {
                 SizedBox(height: 20),
                 PaymentWayesList(),
                 SizedBox(height: 30),
-                CustomButton(title: 'Continue'),
+                BlocBuilder<PaymentCubit, PaymentState>(
+                  builder:
+                      (context, state) => CustomButton(
+                        onTap: () {
+                          BlocProvider.of<PaymentCubit>(context).makePayment(
+                            paymentIntentInputModel: PaymentIntentInputModel(
+                              amount: '100',
+                              currency: 'USD',
+                              customerId: 'cus_SLxD1E76AE6U3g',
+                            ),
+                          );
+                        },
+                        title: 'Continue',
+                        isLoading: state is PaymentLoadingState ? true : false,
+                      ),
+                ),
               ],
             ),
           ),
